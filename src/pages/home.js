@@ -1,8 +1,9 @@
-import { Grid } from "@material-ui/core/";
+import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import React, { Component } from "react";
 
 import Post from "../components/Post";
+import Profile from "../components/Profile";
 
 class home extends Component {
   state = {
@@ -31,7 +32,7 @@ class home extends Component {
             {recentPostsMarkup}
           </Grid>
           <Grid item sm={4} xs={12}>
-            <p>Profile...</p>
+            <Profile/>
           </Grid>
         </Grid>
       </div>

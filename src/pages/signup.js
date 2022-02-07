@@ -1,76 +1,72 @@
-import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles/index";
-import PropTypes from "prop-types";
-import logo from "../images/logo.png";
-import Axios from "axios";
+import React, { Component } from 'react';
+import withStyles from '@material-ui/core/styles/withStyles';
+import PropTypes from 'prop-types';
+import AppIcon from '../images/logo.png';
+import { Link } from 'react-router-dom';
 
-import {
-  Typography as Typo,
-  TextField,
-  Button,
-  Grid,
-  CircularProgress as loadIcon,
-} from "@material-ui/core/";
-import { Link } from "react-router-dom";
+// MUI Stuff
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+// Redux stuff
+import { connect } from 'react-redux';
+import { signupUser } from '../redux/actions/userActions';
 
 const styles = (theme) => ({
-  ...theme,
+  ...theme
 });
 
 class signup extends Component {
   constructor() {
     super();
     this.state = {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      handle: "",
-      loading: false,
-      errors: {},
+      email: '',
+      password: '',
+      confirmPassword: '',
+      handle: '',
+      errors: {}
     };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.UI.errors) {
+      this.setState({ errors: nextProps.UI.errors });
+    }
   }
   handleSubmit = (event) => {
     event.preventDefault();
     this.setState({
-      loading: true,
+      loading: true
     });
     const newUserData = {
       email: this.state.email,
       password: this.state.password,
       confirmPassword: this.state.confirmPassword,
-      handle: this.state.handle,
+      handle: this.state.handle
     };
-    Axios.post("/signup", newUserData)
-      .then((res) => {
-        localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`);
-        this.setState({
-          loading: false,
-        });
-        this.props.history.push("/");
-      })
-      .catch((err) => {
-        this.setState({
-          errors: err.response.data,
-          loading: false,
-        });
-      });
+    this.props.signupUser(newUserData, this.props.history);
   };
   handleChange = (event) => {
     this.setState({
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     });
   };
   render() {
-    const { classes } = this.props;
-    const { errors, loading } = this.state;
+    const {
+      classes,
+      UI: { loading }
+    } = this.props;
+    const { errors } = this.state;
+
     return (
       <Grid container className={classes.form}>
         <Grid item sm />
         <Grid item sm>
-          <img src={logo} alt="Welcome to Mars" className={classes.image} />
-          <Typo variant="h2" className={classes.pageTitle}>
-            Signup
-          </Typo>
+          <img src={AppIcon} alt="monkey" className={classes.image} />
+          <Typography variant="h2" className={classes.pageTitle}>
+            SignUp
+          </Typography>
           <form noValidate onSubmit={this.handleSubmit}>
             <TextField
               id="email"
@@ -121,9 +117,9 @@ class signup extends Component {
               fullWidth
             />
             {errors.general && (
-              <Typo variant="body2" className={classes.customError}>
+              <Typography variant="body2" className={classes.customError}>
                 {errors.general}
-              </Typo>
+              </Typography>
             )}
             <Button
               type="submit"
@@ -132,12 +128,14 @@ class signup extends Component {
               className={classes.button}
               disabled={loading}
             >
-              Signup
+              SignUp
+              {loading && (
+                <CircularProgress size={30} className={classes.progress} />
+              )}
             </Button>
-            {loading && <loadIcon className={classes.progress} size={30} />}
             <br />
             <small>
-              Already have an account? Log in <Link to="/login">here</Link>
+              Already have an account? Log in <Link to="/login">here</Link>!
             </small>
           </form>
         </Grid>
@@ -147,8 +145,19 @@ class signup extends Component {
   }
 }
 
-signup.protypes = {
+signup.propTypes = {
   classes: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired,
+  signupUser: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(signup);
+const mapStateToProps = (state) => ({
+  user: state.user,
+  UI: state.UI
+});
+
+export default connect(
+  mapStateToProps,
+  { signupUser }
+)(withStyles(styles)(signup));
