@@ -3,6 +3,7 @@ import { PropTypes } from "prop-types";
 import { withStyles } from "@material-ui/core/";
 import Link from "react-router-dom/Link";
 import dayjs from "dayjs";
+import EditDetails from "./EditDetails";
 
 import { connect } from "react-redux";
 import { logoutUser, uploadImage } from "../redux/actions/userActions";
@@ -19,6 +20,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LinkIcon from "@mui/icons-material/Link";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
 
 const styles = (theme) => ({
   paper: {
@@ -78,6 +80,9 @@ class Profile extends Component {
   handleEditPicture = () => {
     const fileInput = document.getElementById("imageInput");
     fileInput.click();
+  };
+  handleLogout = () => {
+    this.props.logoutUser();
   };
 
   render() {
@@ -140,6 +145,12 @@ class Profile extends Component {
               <CalendarTodayIcon color="primary" />{" "}
               <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
             </div>
+            <Tooltip title="Logout" placement="top">
+              <IconButton onClick={this.handleLogout}>
+                <KeyboardReturn color="primary"/>
+              </IconButton>
+            </Tooltip>
+            <EditDetails></EditDetails>
           </div>
         </Paper>
       ) : (
