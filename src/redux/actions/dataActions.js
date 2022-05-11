@@ -32,6 +32,8 @@ import {
         });
       });
   };
+
+  //Get one post
   export const getPost = (postId) => (dispatch) => {
     dispatch({ type: LOADING_UI });
     axios
@@ -64,6 +66,7 @@ import {
         });
       });
   };
+
   // Like a post
   export const likePost = (postId) => (dispatch) => {
     axios
@@ -76,6 +79,7 @@ import {
       })
       .catch((err) => console.log(err));
   };
+
   // Unlike a post
   export const unlikePost = (postId) => (dispatch) => {
     axios
